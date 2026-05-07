@@ -1,0 +1,219 @@
+openapi: 3.0.0
+info:
+  title: Animanga API
+  version: 1.0.0
+  description: API REST para el backend de Animanga (Series, Capítulos, Comentarios y Calificaciones)
+servers:
+  - url: http://localhost:3000/api
+    description: Servidor Local
+
+tags:
+  - name: Series
+    description: Operaciones sobre las series (animes/mangas)
+  - name: Chapters
+    description: Gestión de capítulos de las series
+  - name: Comments
+    description: Comentarios para series y capítulos
+  - name: Ratings
+    description: Calificaciones de las series
+
+paths:
+  /series:
+    get:
+      tags: [Series]
+      summary: Obtener todas las series
+      responses:
+        '200':
+          description: Lista de series
+    post:
+      tags: [Series]
+      summary: Crear una nueva serie
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Serie creada exitosamente
+
+  /series/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: [Series]
+      summary: Obtener una serie por su ID
+      responses:
+        '200':
+          description: Datos de la serie
+    put:
+      tags: [Series]
+      summary: Actualizar una serie existente
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Serie actualizada
+    delete:
+      tags: [Series]
+      summary: Eliminar una serie
+      responses:
+        '200':
+          description: Serie eliminada
+
+  /chapters/series/{seriesId}:
+    parameters:
+      - in: path
+        name: seriesId
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: [Chapters]
+      summary: Obtener capítulos de una serie
+      responses:
+        '200':
+          description: Lista de capítulos
+    post:
+      tags: [Chapters]
+      summary: Crear un capítulo para una serie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+      responses:
+        '201':
+          description: Capítulo creado
+
+  /chapters/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: [Chapters]
+      summary: Obtener un capítulo por ID
+      responses:
+        '200':
+          description: Detalles del capítulo
+
+  /comments/series/{seriesId}:
+    parameters:
+      - in: path
+        name: seriesId
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: [Comments]
+      summary: Obtener comentarios de una serie
+      responses:
+        '200':
+          description: Lista de comentarios
+    post:
+      tags: [Comments]
+      summary: Crear un comentario en una serie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                username:
+                  type: string
+      responses:
+        '201':
+          description: Comentario creado
+
+  /comments/chapter/{chapterId}:
+    parameters:
+      - in: path
+        name: chapterId
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: [Comments]
+      summary: Obtener comentarios de un capítulo
+      responses:
+        '200':
+          description: Lista de comentarios
+    post:
+      tags: [Comments]
+      summary: Crear un comentario en un capítulo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                username:
+                  type: string
+      responses:
+        '201':
+          description: Comentario creado
+
+  /ratings/series/{seriesId}:
+    parameters:
+      - in: path
+        name: seriesId
+        required: true
+        schema:
+          type: integer
+    get:
+      tags: [Ratings]
+      summary: Obtener calificaciones de una serie
+      responses:
+        '200':
+          description: Promedio y lista de calificaciones
+    post:
+      tags: [Ratings]
+      summary: Calificar una serie
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                score:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+      responses:
+        '201':
+          description: Calificación agregada

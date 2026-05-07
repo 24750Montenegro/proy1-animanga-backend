@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 require('dotenv').config();
 
 const seriesRoutes = require('./routes/series');
@@ -20,6 +22,12 @@ app.use('/api/chapters', chaptersRoutes);
 app.use('/api/comments', commentsRoutes);
 app.use('/api/ratings', ratingsRoutes);
 
+// Configuración de Swagger
+const swaggerDocument = YAML.load(path.join(__dirname, '../docs/swagger.yaml'));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
+  console.log(`Documentación API disponible en http://localhost:${PORT}/api-docs`);
 });
