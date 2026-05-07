@@ -10,9 +10,27 @@ services:
       POSTGRES_PASSWORD: animanga123
       POSTGRES_DB: animanga_db
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: animanga_backend
+    restart: unless-stopped
+    ports:
+      - "${PORT}:3000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: animanga
+      DB_PASSWORD: animanga123
+      DB_NAME: animanga_db
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - /app/node_modules
 
 volumes:
   pgdata:
