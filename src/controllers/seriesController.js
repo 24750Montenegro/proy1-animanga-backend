@@ -1,7 +1,6 @@
 const pool = require('../db/pool');
 
-async function getAll(req, res) {
-  const { type } = req.query;
+async function fetchSeries(type) {
   let query = 'SELECT s.*, COALESCE(AVG(r.score), 0) AS avg_rating, COUNT(r.id) AS total_ratings FROM series s LEFT JOIN ratings r ON s.id = r.series_id';
   const params = [];
 
@@ -13,7 +12,13 @@ async function getAll(req, res) {
   query += ' GROUP BY s.id ORDER BY s.created_at DESC';
 
   const result = await pool.query(query, params);
-  res.json(result.rows);
+  return result.rows;
+}
+
+async function getAll(req, res) {
+  const { type } = req.query;
+  const series = await fetchSeries(type);
+  res.json(series);
 }
 
 async function getById(req, res) {
@@ -43,6 +48,50 @@ async function getById(req, res) {
   series.comments = commentsResult.rows;
 
   res.json(series);
+}
+
+async function exportCSV(req, res) {
+  try{
+  const {type} = req.query;
+
+  const data = await fetchSeries(type);
+
+  if(data.length === 0 || !data) {
+    return res.status(404).json({error: 'No se encontraron datos para exportar'});
+  }
+
+  const headers = Object.keys(data[0]).join(',');
+
+  const rows = data.map( row => {
+    return Object.values(row).map(value => {
+      //nulos
+      let strValue = value === null ? '' : value.toString();
+      //comillas
+      let tieneComillas = strValue.includes('"');
+      if (tieneComillas) {
+        strValue = strValue.replace(/"/g, '""');
+      }
+      
+      // comas, saltos de linea O si originalmente tenía comillas
+      if (tieneComillas || strValue.includes(',') || strValue.includes('\n')) {
+        strValue = `"${strValue}"`;
+      }
+      return strValue;
+    }).join(',');
+  });
+
+   const CSV = `${headers}\n${rows.join('\n')}`;
+
+    //nombre del archivo
+    const filename = `${type || 'all'}_series_${Date.now()}.csv`;
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send(CSV);
+  } catch (error) {
+    console.error('Error al exportar CSV:', error);
+    res.status(500).json({ error: 'Error al exportar CSV' });
+  }
 }
 
 async function create(req, res) {
@@ -123,4 +172,4 @@ async function remove(req, res) {
   res.json({ message: 'Serie eliminada' });
 }
 
-module.exports = { getAll, getById, create, update, remove };
+module.exports = { getAll, getById, exportCSV, create, update, remove };
