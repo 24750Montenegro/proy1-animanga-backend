@@ -6,7 +6,7 @@ async function getBySeriesId(req, res) {
     'SELECT * FROM comments WHERE series_id = $1 ORDER BY created_at DESC',
     [seriesId]
   );
-  res.json(result.rows);
+  res.status(200).json(result.rows);
 }
 
 async function getByChapterId(req, res) {
@@ -15,7 +15,7 @@ async function getByChapterId(req, res) {
     'SELECT * FROM comments WHERE chapter_id = $1 ORDER BY created_at DESC',
     [chapterId]
   );
-  res.json(result.rows);
+  res.status(200).json(result.rows);
 }
 
 async function createForSeries(req, res) {

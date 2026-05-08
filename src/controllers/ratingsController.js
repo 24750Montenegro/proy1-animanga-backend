@@ -8,7 +8,7 @@ async function getBySeries(req, res) {
     [seriesId]
   );
 
-  res.json(result.rows[0]);
+  res.status(200).json(result.rows[0]);
 }
 
 async function create(req, res) {

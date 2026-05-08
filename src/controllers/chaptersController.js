@@ -6,7 +6,7 @@ async function getBySeries(req, res) {
     'SELECT * FROM chapters WHERE series_id = $1 ORDER BY number ASC',
     [seriesId]
   );
-  res.json(result.rows);
+  res.status(200).json(result.rows);
 }
 
 async function create(req, res) {
@@ -42,7 +42,7 @@ async function getById(req, res) {
   const chapter = chapterResult.rows[0];
   chapter.comments = commentsResult.rows;
 
-  res.json(chapter);
+  res.status(200).json(chapter);
 }
 
 module.exports = { getBySeries, create, getById };

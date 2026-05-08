@@ -18,7 +18,7 @@ async function fetchSeries(type) {
 async function getAll(req, res) {
   const { type } = req.query;
   const series = await fetchSeries(type);
-  res.json(series);
+  res.status(200).json(series);
 }
 
 async function getById(req, res) {
@@ -47,7 +47,7 @@ async function getById(req, res) {
   series.chapters = chaptersResult.rows;
   series.comments = commentsResult.rows;
 
-  res.json(series);
+  res.status(200).json(series);
 }
 
 async function exportCSV(req, res) {
@@ -87,7 +87,7 @@ async function exportCSV(req, res) {
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-    res.send(CSV);
+    res.status(200).send(CSV);
   } catch (error) {
     console.error('Error al exportar CSV:', error);
     res.status(500).json({ error: 'Error al exportar CSV' });
@@ -158,7 +158,7 @@ async function update(req, res) {
     return res.status(404).json({ error: 'Serie no encontrada' });
   }
 
-  res.json(result.rows[0]);
+  res.status(200).json(result.rows[0]);
 }
 
 async function remove(req, res) {
@@ -169,7 +169,7 @@ async function remove(req, res) {
     return res.status(404).json({ error: 'Serie no encontrada' });
   }
 
-  res.json({ message: 'Serie eliminada' });
+  res.status(200).json({ message: 'Serie eliminada' });
 }
 
 module.exports = { getAll, getById, exportCSV, create, update, remove };
