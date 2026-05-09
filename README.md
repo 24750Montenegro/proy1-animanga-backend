@@ -4,6 +4,7 @@ Backend de la aplicacion AniManga construido con Express y PostgreSQL. Expone un
 
 ## 1. Enlaces Importantes
 
+- Link al deploy: https://animanga.jfmonte.com
 - Link al otro repositorio: https://github.com/24750Montenegro/proy1-animanga-frontend
 - Link a este repositorio: https://github.com/24750Montenegro/proy1-animanga-backend
 
@@ -52,13 +53,19 @@ Si usas PostgreSQL instalado localmente, puedes cambiar `DB_PORT` a `5432` o al 
 npm run migrate
 ```
 
-7. Inicia el servidor:
+7. (Opcional) Carga datos de ejemplo en la base de datos:
+
+```bash
+npm run seed
+```
+
+8. Inicia el servidor:
 
 ```bash
 npm start
 ```
 
-8. La API quedara disponible en `http://localhost:3000/api` y Swagger UI en `http://localhost:3000/api-docs`.
+9. La API quedara disponible en `http://localhost:3000/api` y Swagger UI en `http://localhost:3000/api-docs`. Para consultar la lista completa de endpoints, revisa Swagger UI.
 
 ### Opcion B: levantarlo con Docker Compose
 
@@ -80,9 +87,13 @@ cp .env.example .env
 docker compose up --build
 ```
 
-Con esa configuracion se levantan PostgreSQL y el backend listos para trabajar en local.
+Con esa configuracion se levantan PostgreSQL y el backend listos para trabajar en local. Si quieres cargar datos de ejemplo, ejecuta `npm run seed` (o `docker compose exec <servicio_backend> npm run seed`) una vez los contenedores esten arriba.
 
-## 3. Screenshot de la Aplicacion
+## 3. Screenshot de la Aplicacion (swaggerUI)
+
+![Swagger UI del backend](backend-swaggerUI.png)
+
+en el frontend está la screenshot de la UI del proyecto
 
 ## 4. Configuracion de CORS
 
