@@ -26,6 +26,10 @@ app.use('/api/ratings', ratingsRoutes);
 const swaggerDocument = YAML.load(path.join(__dirname, '../docs/swagger.yaml'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+app.use((err, req, res, next) => {
+  console.error('Error capturado:', err.message);
+  res.status(400).json({ error: err.message || 'Error interno' });
+});
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
